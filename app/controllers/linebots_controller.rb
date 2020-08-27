@@ -9,6 +9,7 @@ class LinebotsController < ApplicationController
     events.each { |event|
       puts "event.type #{event.type}"
       puts "event #{event}"
+      puts "events #{events}"
 
       case event.type
       when Line::Bot::Event::MessageType::Text
