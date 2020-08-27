@@ -12,10 +12,13 @@ class LinebotsController < ApplicationController
       puts "event.class #{event.class}"
       puts "JSON.parse(event.to_json, symbolize_names: true) #{JSON.parse(event.to_json, symbolize_names: true)}"
 
-      case event.class
-      when Line::Bot::Event::MessageType::Text
-        if event.message['text'].eql?('アンケート')
-          client.reply_message(event['replyToken'], template)
+      case event
+      when Line::Bot::Event::Message
+        case event.type
+        when Line::Bot::Event::MessageType::Text
+          if event.message['text'].eql?('アンケート')
+            client.reply_message(event['replyToken'], template)
+          end
         end
       when Line::Bot::Event::Beacon
         client.reply_message(event['replyToken'], template_2)
