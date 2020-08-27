@@ -34,3 +34,4 @@
 
 /crt/server.key
 /crt/server.crt
+/crt/server.csr
