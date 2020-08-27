@@ -7,6 +7,8 @@ class LinebotsController < ApplicationController
     head :bad_request unless valid_signature?
 
     events.each { |event|
+      puts "event.type #{event.type}"
+      
       case event.type
       when Line::Bot::Event::MessageType::Text
         if event.message['text'].eql?('アンケート')
