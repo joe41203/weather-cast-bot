@@ -4,14 +4,7 @@ class LinebotsController < ApplicationController
   # protect_from_forgery except: :callback
 
   def callback
-    body = request.body.read
-
-    signature = request.env['HTTP_X_LINE_SIGNATURE']
-    unless client.validate_signature(body, signature)
-      head :bad_request
-    end
-
-    events = client.parse_events_from(body)
+    head :bad_request unless valid_signature?
 
     events.each { |event|
       case event
@@ -21,6 +14,8 @@ class LinebotsController < ApplicationController
           if event.message['text'].eql?('アンケート')
             client.reply_message(event['replyToken'], template)
           end
+        when Line::Bot::Event::Beacon
+          client.reply_message(event['replyToken'], template)
         end
       end
     }
@@ -29,6 +24,22 @@ class LinebotsController < ApplicationController
   end
 
   private
+
+  def events
+    @events ||= client.parse_events_from(body)
+  end
+
+  def signature
+    @signature ||= request.env['HTTP_X_LINE_SIGNATURE']
+  end
+
+  def body
+    @body ||= request.body.read
+  end 
+
+  def valid_signature?
+    client.validate_signature(body, signature)
+  end
 
   def client
     @client ||= Line::Bot::Client.new { |config|
@@ -48,9 +59,7 @@ class LinebotsController < ApplicationController
           "actions": [
               {
                 "type": "message",
-                # Botから送られてきたメッセージに表示される文字列です。
                 "label": "楽しい",
-                # ボタンを押した時にBotに送られる文字列です。
                 "text": "楽しい"
               },
               {
