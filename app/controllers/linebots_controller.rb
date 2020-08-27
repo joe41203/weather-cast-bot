@@ -1,7 +1,7 @@
 class LinebotsController < ApplicationController
   require 'line/bot'
 
-  protect_from_forgery except: :callback
+  # protect_from_forgery except: :callback
 
   def callback
     body = request.body.read
