@@ -8,7 +8,8 @@ class LinebotsController < ApplicationController
 
     events.each { |event|
       puts "event.type #{event.type}"
-      
+      puts "event #{event}"
+
       case event.type
       when Line::Bot::Event::MessageType::Text
         if event.message['text'].eql?('アンケート')
@@ -17,7 +18,6 @@ class LinebotsController < ApplicationController
       when 'beacon'
         client.reply_message(event['replyToken'], template_2)
       else
-        puts event
         puts "type #{event.type}"
         client.reply_message(event['replyToken'], template_3)
       end
