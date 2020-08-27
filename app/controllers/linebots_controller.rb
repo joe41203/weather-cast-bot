@@ -12,7 +12,6 @@ class LinebotsController < ApplicationController
         if event.message['text'].eql?('アンケート')
           client.reply_message(event['replyToken'], template)
         end
-      end
       when 'beacon'
         client.reply_message(event['replyToken'], template_2)
       else
