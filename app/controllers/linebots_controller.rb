@@ -16,6 +16,9 @@ class LinebotsController < ApplicationController
           end
         when Line::Bot::Event::Beacon
           client.reply_message(event['replyToken'], template)
+        else
+          puts event
+          client.reply_message(event['replyToken'], template)
         end
       end
     }
