@@ -7,19 +7,18 @@ class LinebotsController < ApplicationController
     head :bad_request unless valid_signature?
 
     events.each { |event|
-      case event
-      when Line::Bot::Event::Message
-        case event.type
-        when Line::Bot::Event::MessageType::Text
-          if event.message['text'].eql?('アンケート')
-            client.reply_message(event['replyToken'], template)
-          end
-        when Line::Bot::Event::Beacon
-          client.reply_message(event['replyToken'], template)
-        else
-          puts event
+      case event.type
+      when Line::Bot::Event::MessageType::Text
+        if event.message['text'].eql?('アンケート')
           client.reply_message(event['replyToken'], template)
         end
+      end
+      when 'beacon'
+        client.reply_message(event['replyToken'], template_2)
+      else
+        puts event
+        puts "type #{event.type}"
+        client.reply_message(event['replyToken'], template_3)
       end
     }
 
@@ -59,6 +58,52 @@ class LinebotsController < ApplicationController
       "template": {
           "type": "confirm",
           "text": "今日のもくもく会は楽しいですか？",
+          "actions": [
+              {
+                "type": "message",
+                "label": "楽しい",
+                "text": "楽しい"
+              },
+              {
+                "type": "message",
+                "label": "楽しくない",
+                "text": "楽しくない"
+              }
+          ]
+      }
+    }
+  end
+
+  def template_2
+    {
+      "type": "template",
+      "altText": "this is a confirm template",
+      "template": {
+          "type": "confirm",
+          "text": "beaconです",
+          "actions": [
+              {
+                "type": "message",
+                "label": "楽しい",
+                "text": "楽しい"
+              },
+              {
+                "type": "message",
+                "label": "楽しくない",
+                "text": "楽しくない"
+              }
+          ]
+      }
+    }
+  end
+
+  def template_3
+    {
+      "type": "template",
+      "altText": "this is a confirm template",
+      "template": {
+          "type": "confirm",
+          "text": "beaconでもメッセージでもありません",
           "actions": [
               {
                 "type": "message",
