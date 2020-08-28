@@ -1,8 +1,6 @@
 class LinebotsController < ApplicationController
   require 'line/bot'
 
-  # protect_from_forgery except: :callback
-
   def callback
     head :bad_request unless valid_signature?
 
@@ -21,10 +19,10 @@ class LinebotsController < ApplicationController
           end
         end
       when Line::Bot::Event::Beacon
-        client.reply_message(event['replyToken'], template_2)
+        client.reply_message(event['replyToken'], message_type_text)
       else
         puts "type #{event.type}"
-        client.reply_message(event['replyToken'], template_3)
+        client.reply_message(event['replyToken'], template)
       end
     }
 
@@ -57,6 +55,13 @@ class LinebotsController < ApplicationController
     }
   end
 
+  def message_type_text
+    {
+      "type": "text",
+      "text": OpenWeatherMap.latest_forcasts_message
+    }
+  end
+
   def template
     {
       "type": "template",
@@ -64,52 +69,6 @@ class LinebotsController < ApplicationController
       "template": {
           "type": "confirm",
           "text": "今日のもくもく会は楽しいですか？",
-          "actions": [
-              {
-                "type": "message",
-                "label": "楽しい",
-                "text": "楽しい"
-              },
-              {
-                "type": "message",
-                "label": "楽しくない",
-                "text": "楽しくない"
-              }
-          ]
-      }
-    }
-  end
-
-  def template_2
-    {
-      "type": "template",
-      "altText": "this is a confirm template",
-      "template": {
-          "type": "confirm",
-          "text": "beaconです",
-          "actions": [
-              {
-                "type": "message",
-                "label": "楽しい",
-                "text": "楽しい"
-              },
-              {
-                "type": "message",
-                "label": "楽しくない",
-                "text": "楽しくない"
-              }
-          ]
-      }
-    }
-  end
-
-  def template_3
-    {
-      "type": "template",
-      "altText": "this is a confirm template",
-      "template": {
-          "type": "confirm",
-          "text": "beaconでもメッセージでもありません",
           "actions": [
               {
                 "type": "message",
