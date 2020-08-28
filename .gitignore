@@ -31,7 +31,3 @@
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 /vendor/bundle
-
-/crt/server.key
-/crt/server.crt
-/crt/server.csr
